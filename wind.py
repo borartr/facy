@@ -18,10 +18,10 @@ print "Reading '%s', width=%i, height=%i, depth=%i" %("wind.vtk", W, H, D)
 
 ## creating an outline of the dataset ###############################################################
 outline = vtk.vtkOutlineFilter()
-outline.SetInput( reader.GetOutput() )
+outline.SetInputData( reader.GetOutput() )
 
 outlineMapper = vtk.vtkPolyDataMapper()
-outlineMapper.SetInput( outline.GetOutput() )
+outlineMapper.SetInputConnection( outline.GetOutputPort() )
 outlineActor = vtk.vtkActor()
 outlineActor.SetMapper( outlineMapper )
 outlineActor.GetProperty().SetColor(1.0,1.0,1.0)
@@ -78,7 +78,7 @@ Arrow = vtk.vtkArrowSource()
 
 glyph = vtk.vtkGlyph3D()
 glyph.SetInputConnection( SlicePlane.GetOutputPort() )
-glyph.SetSource( Arrow.GetOutput() )
+glyph.SetSourceConnection( Arrow.GetOutputPort() )
 glyph.SetScaleModeToScaleByScalar()
 glyph.SetScaleFactor(2)
 glyph.ClampingOn()
@@ -104,7 +104,7 @@ LineSourceActor.SetMapper( LineSourceMapper )
 integ = vtk.vtkRungeKutta4() # integrator for generating the streamlines #
 streamer = vtk.vtkStreamLine()
 streamer.SetInputConnection( reader.GetOutputPort() )
-streamer.SetSource( LineSource.GetOutput() )
+streamer.SetSourceConnection( LineSource.GetOutputPort() )
 streamer.SetMaximumPropagationTime(500)
 streamer.SetIntegrationStepLength(.02)
 streamer.SetStepLength(.01)
@@ -146,7 +146,7 @@ w2if.SetInput( renWin )
 
 ## create png writer ##############################################################################
 wr = vtk.vtkPNGWriter()
-wr.SetInput( w2if.GetOutput() )
+wr.SetInputConnection( w2if.GetOutputPort() )
 
 ## Python function for the keyboard interface #####################################################
 # count is a screenshot counter #
